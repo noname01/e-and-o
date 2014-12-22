@@ -1,0 +1,9 @@
+{
+  "name": "evo",
+  "description": "simple game",
+  "dependencies": {
+    "express": "^4.10.6",
+    "jade": "^1.8.2",
+    "socket.io": "^1.2.1"
+  }
+}
