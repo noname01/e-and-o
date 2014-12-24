@@ -9,7 +9,7 @@ app.controller("gameCtrl", function($scope){
     }
     for(var i = 0; i < 5; i++){
         for(var j = 0; j < 5; j++){
-            $scope.map[i][j] = 0;
+            $scope.map[i][j] = null;
         }
     }
 

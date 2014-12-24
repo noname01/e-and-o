@@ -1,0 +1,63 @@
+* {
+    font-family:  "Open Sans", sans-serif;
+    color: #555555;
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: normal;
+}
+
+#main {
+    width: 800px;
+    margin: 0 auto;
+}
+
+#grid{
+    float: left;
+    background-color: silver;
+    border: 4px solid silver;
+    border-radius: 10px;
+}
+
+#grid td {
+    border: 2px solid silver;
+    margin: 0;
+    height: 90px;
+    width: 90px;
+    border-radius: 6px;
+    font-size: 30px;
+    text-align: center;
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -ms-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+}
+
+#side {
+    float: left;
+    width: 260px;
+    margin: 0 20px;
+}
+
+#messages {
+    list-style: none;
+    padding-left: 0;
+}
+
+#grid td.empty{
+    background-color: whitesmoke;
+}
+
+#grid td.epmty:hover {
+    background-color: antiquewhite;
+}
+
+#grid td.even{
+    background-color: lightsalmon;
+}
+
+#grid td.odd{
+    background-color: lightskyblue;
+}

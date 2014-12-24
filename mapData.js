@@ -9,15 +9,16 @@ for(var i = 0; i < height; i++){
 
 for(var i = 0; i < height; i++){
     for(var j = 0; j < width; j++){
-        prototype[i][j] = 0;
+        prototype[i][j] = null;
     }
 }
 
 
 //stub
-prototype[2][2] = 3;
+prototype[2][2] = 2;
 prototype[0][1] = 5;
 prototype[3][2] = 1;
+prototype[2][4] = 6;
 
 //console.log(prototype);
 
