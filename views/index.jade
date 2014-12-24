@@ -1,7 +1,12 @@
 extends layout.jade
 block main
-    h1 Hello World
+    h1 E&O
     p#status
-    input#inputMessage(type="text")
-    button#sendMessage send
+    table
+        tr(ng-repeat="row in map track by $index")
+            td(ng-repeat="cell in row track by $index") {{cell}}
+    form(ng-submit="sendMessage")
+        input#inputMessage(ng-model="textInput", type="text")
+        input(type="submit", value="Send")
     ul#messages
+        li(ng-repeat="msg in messages") {{msg}}

@@ -1,10 +1,11 @@
 doctype html
-html
+html(ng-app="app")
     head
         link(href="/css/main.css", rel="stylesheet", type="text/css")
+        script(src="/js/lib/angular.min.js")
         script(src="/js/lib/jquery-1.11.2.min.js")
         title evo
-    body
+    body(ng-controller="gameCtrl")
         block main
         script(src="/socket.io/socket.io.js")
-        script(src="/js/main.js")
+        script(src="/js/app.js")
