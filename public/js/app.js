@@ -33,8 +33,15 @@ app.controller("gameCtrl", function($scope){
         updateMessages($scope, "chat:" + msg);
     });
 
-    socket.on("game starts", function(mapData){
+    socket.on("init", function(role, nums){
+        $scope.role = role;
+        $scope.numbers = nums;
+    });
+
+    socket.on("game starts", function(mapData, numberData){
         updateMessages($scope, "game starts.");
+        updateMessages($scope, "your role is " + $scope.role);
+        updateMessages($scope, "your numbers are " + $scope.numbers);
         $scope.map = mapData;
         console.log($scope.map);
         $scope.$apply();

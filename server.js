@@ -2,6 +2,7 @@ var express = require("express");
 var path = require("path");
 var routes = require("./routes");
 var mapData = require("./mapData.js");
+var numberData = require("./numberData.js");
 
 var app = express();
 var http = require('http').Server(app);
@@ -19,25 +20,35 @@ app.get('/', routes.index);
 app.get("*", routes.index);
 
 var waiting = null;
+var prevRole = null;
 var roomCount = 0;
+var nums = null;
 
 // socket.io
 io.on("connection", function(socket){
     // namespace: roomX
     var room = "room";
     var map = mapData.generateMap();
+    var role = null;
 
     if(waiting === null){ // create a new room
         roomCount++;
         room += roomCount;
         waiting = room;
-        console.log("create " + room);
+        role = Math.random() > 0.5 ? "even" : "odd";
+        nums = numberData.partition();
+        socket.emit("init", role, nums[role === "even" ? 1 : 0]);
+        prevRole = role;
+        console.log("create " + room + " role:" + role);
         socket.join(room);
         socket.emit("waiting");
     }
     else{ // join a room
         room += roomCount;
-        console.log("join room" + roomCount);
+        role = prevRole == "even" ? "odd" : "even";
+        socket.emit("init", role, nums[role === "even" ? 1 : 0]);
+        prevRole = null;
+        console.log("join room" + roomCount + " role:" + role);
         socket.join(room);
         io.in(room).emit("find opponent");
         waiting = null;
