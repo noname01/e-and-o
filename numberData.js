@@ -1,10 +1,20 @@
-var numbers = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9];
+var evenNumbers = [0, 0, 2, 2, 4, 4, 6, 6, 8, 8];
+var oddNumbers = [1, 1, 3, 3, 5, 5, 7, 7, 9, 9];
 
 function partition(){
-    var shuffled = shuffle(numbers);
-    var a1 = shuffled.slice(0, numbers.length / 2).sort();
-    var a2 = shuffled.slice(numbers.length / 2, numbers.length).sort();
-    return [a1, a2];
+    var shuffledEven = shuffle(evenNumbers);
+    var shuffledOdd = shuffle(oddNumbers);
+
+    return [
+        {
+            even: shuffledEven.slice(0, evenNumbers.length / 2).sort(),
+            odd: shuffledOdd.slice(0, oddNumbers.length / 2).sort()
+        },
+        {
+            even: shuffledEven.slice(evenNumbers.length / 2, evenNumbers.length).sort(),
+            odd: shuffledOdd.slice(oddNumbers.length / 2, oddNumbers.length).sort()
+        }
+    ];
 }
 
 //+ Jonas Raoni Soares Silva

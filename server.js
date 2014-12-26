@@ -22,7 +22,6 @@ app.get("*", routes.index);
 var waiting = null;
 var prevRole = null;
 var roomCount = 0;
-var nums = null;
 
 // socket.io
 io.on("connection", function(socket){
@@ -36,8 +35,8 @@ io.on("connection", function(socket){
         room += roomCount;
         waiting = room;
         role = Math.random() > 0.5 ? "even" : "odd";
-        nums = numberData.partition();
-        socket.emit("init", role, nums[role === "even" ? 1 : 0]);
+
+        socket.emit("init", role);
         prevRole = role;
         console.log("create " + room + " role:" + role);
         socket.join(room);
@@ -46,14 +45,14 @@ io.on("connection", function(socket){
     else{ // join a room
         room += roomCount;
         role = prevRole == "even" ? "odd" : "even";
-        socket.emit("init", role, nums[role === "even" ? 1 : 0]);
+        socket.emit("init", role);
         prevRole = null;
         console.log("join room" + roomCount + " role:" + role);
         socket.join(room);
         io.in(room).emit("find opponent");
         waiting = null;
         setTimeout(function(){
-            io.in(room).emit("game starts", map);
+            io.in(room).emit("game starts", map, numberData.partition());
         }, 3000)
     }
 

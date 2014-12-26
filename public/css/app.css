@@ -13,11 +13,17 @@ h1 {
     margin: 0 auto;
 }
 
-#grid{
+#gameArea {
     float: left;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+#grid{
     background-color: silver;
     border: 4px solid silver;
     border-radius: 10px;
+    margin-bottom: 30px;
 }
 
 #grid td {
@@ -58,10 +64,35 @@ h1 {
     background-color: antiquewhite;
 }
 
-#grid td.even{
+.numbers {
+    margin-top: 10px;
+}
+
+.numbers .hand {
+    display: inline-block;
+    border: 3px solid silver;
+    margin-right: 8px;
+    line-height: 70px;
+    height: 70px;
+    width: 70px;
+    border-radius: 6px;
+    font-size: 30px;
+    text-align: center;
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -ms-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+}
+
+.hand:hover{
+    border: 3px solid gray;
+}
+
+.even{
     background-color: lightsalmon;
 }
 
-#grid td.odd{
+.odd{
     background-color: lightskyblue;
 }

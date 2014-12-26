@@ -1,10 +1,15 @@
 extends layout.jade
 block main
     h1 E&O
-    table#grid
-        tr(ng-repeat="row in map track by $index")
-            td(ng-repeat="cell in row track by $index", class="{{cell===null?'empty':(cell%2==0?'even':'odd')}}") {{cell}}
-            //({{$parent.$index}}, {{$index}})
+    #gameArea
+        table#grid
+            tr(ng-repeat="row in map track by $index")
+                td(ng-repeat="cell in row track by $index", class="{{cell===null?'empty':(cell%2==0?'even':'odd')}}") {{cell}}
+                //({{$parent.$index}}, {{$index}})
+        .numbers
+            span(class="hand even", ng-repeat="num in evenNumbers track by $index") {{num}}
+        .numbers
+            span(class="hand odd", ng-repeat="num in oddNumbers track by $index") {{num}}
     #side
         form(ng-submit="sendMessage()")
             input#inputMessage(ng-model="textInput", type="text")

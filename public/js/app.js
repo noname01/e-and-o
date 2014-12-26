@@ -35,15 +35,16 @@ app.controller("gameCtrl", function($scope){
 
     socket.on("init", function(role, nums){
         $scope.role = role;
-        $scope.numbers = nums;
     });
 
     socket.on("game starts", function(mapData, numberData){
+        var numbers = numberData[$scope.role === "even" ? 1 : 0];
+        $scope.evenNumbers = numbers.even;
+        $scope.oddNumbers = numbers.odd;
+        $scope.map = mapData;
         updateMessages($scope, "game starts.");
         updateMessages($scope, "your role is " + $scope.role);
-        updateMessages($scope, "your numbers are " + $scope.numbers);
-        $scope.map = mapData;
-        console.log($scope.map);
+        //console.log($scope.map);
         $scope.$apply();
     });
 
