@@ -23,7 +23,7 @@ for(var i = 0; i < height; i++){
 //console.log(prototype);
 
 function generateMap(){
-    return prototype;
+    return prototype.slice(0);
 }
 
 module.exports = {

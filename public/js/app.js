@@ -42,9 +42,8 @@ app.controller("gameCtrl", function($scope){
     });
 
     socket.on("game starts", function(mapData, numberData){
-        var numbers = numberData[$scope.role === "even" ? 1 : 0];
-        $scope.evenNumbers = numbers.even;
-        $scope.oddNumbers = numbers.odd;
+        $scope.evenNumbers = numberData.even;
+        $scope.oddNumbers = numberData.odd;
         $scope.map = mapData;
         updateMessages($scope, "game starts.");
         updateMessages($scope, "your role is " + $scope.role);
@@ -52,11 +51,14 @@ app.controller("gameCtrl", function($scope){
         $scope.$apply();
     });
 
-    socket.on("update game state", function(mapData, numberData){
-        var numbers = numberData[$scope.role === "even" ? 1 : 0];
-        $scope.evenNumbers = numbers.even;
-        $scope.oddNumbers = numbers.odd;
+    socket.on("update map", function(mapData){
         $scope.map = mapData;
+        $scope.$apply();
+    });
+
+    socket.on("update numbers", function(numberData){
+        $scope.evenNumbers = numberData.even;
+        $scope.oddNumbers = numberData.odd;
         $scope.$apply();
     });
 
@@ -73,7 +75,7 @@ app.controller("gameCtrl", function($scope){
     $scope.setNumber = function(x, y){
         if($scope.selected !== null && $scope.canSet){
             console.log("set "+x+y);
-            socket.emit("set number", x, y, $scope.role === "even" ? 1 : 0, $scope.selected, $scope.selectedIndex);
+            socket.emit("set number", x, y, $scope.selected, $scope.selectedIndex);
             //$scope.canSet = false;
             $scope.selected = null;
         }
