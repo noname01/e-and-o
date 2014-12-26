@@ -5,7 +5,8 @@ block main
         table#grid
             tr(ng-repeat="row in map track by $index")
                 td(ng-repeat="cell in row track by $index",
-                class="{{cell===null?'empty':(cell % 2 == 0 ? 'even' : 'odd')}}") {{cell}}
+                class="{{(cell===null?'empty':(cell % 2 == 0 ? 'even' : 'odd'))}} {{canSet ? 'canSet' : ''}}",
+                ng-click="setNumber($parent.$index, $index)") {{cell}}
                 //({{$parent.$index}}, {{$index}})
         .numbers
             a(href="", class="hand even {{selected === num && $index === selectedIndex ? 'selected' : ''}}",

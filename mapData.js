@@ -14,11 +14,11 @@ for(var i = 0; i < height; i++){
 }
 
 
-//stub
-prototype[2][2] = 2;
-prototype[0][1] = 5;
-prototype[3][2] = 1;
-prototype[2][4] = 6;
+////stub
+//prototype[2][2] = 2;
+//prototype[0][1] = 5;
+//prototype[3][2] = 1;
+//prototype[2][4] = 6;
 
 //console.log(prototype);
 

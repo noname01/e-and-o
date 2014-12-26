@@ -29,6 +29,7 @@ io.on("connection", function(socket){
     var room = "room";
     var map = mapData.generateMap();
     var role = null;
+    var gameNumberData = numberData.partition();
 
     if(waiting === null){ // create a new room
         roomCount++;
@@ -52,7 +53,7 @@ io.on("connection", function(socket){
         io.in(room).emit("find opponent");
         waiting = null;
         setTimeout(function(){
-            io.in(room).emit("game starts", map, numberData.partition());
+            io.in(room).emit("game starts", map, gameNumberData);
         }, 3000)
     }
 
@@ -61,6 +62,13 @@ io.on("connection", function(socket){
         console.log("msg: " + msg);
         io.in(room).emit("message", msg);
     });
+
+    socket.on("set number", function(x, y, dataIndex, num, numberIndex){
+        map[x][y] = num;
+        gameNumberData[dataIndex][num%2==0?"even":"odd"].splice(numberIndex, 1);
+        io.in(room).emit("update game state", map, gameNumberData);
+    });
+
     socket.on("disconnect", function(){
         console.log("user disconnected");
         if(waiting === room){

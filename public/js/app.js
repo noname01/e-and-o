@@ -3,8 +3,9 @@ var socket = io();
 
 app.controller("gameCtrl", function($scope){
 
-    $scope.selected = "none";
+    $scope.selected = null;
     $scope.selectedIndex = -1;
+    $scope.canSet = true;
 
     $scope.map = new Array(5);
     for(var i = 0; i < 5; i++){
@@ -51,6 +52,14 @@ app.controller("gameCtrl", function($scope){
         $scope.$apply();
     });
 
+    socket.on("update game state", function(mapData, numberData){
+        var numbers = numberData[$scope.role === "even" ? 1 : 0];
+        $scope.evenNumbers = numbers.even;
+        $scope.oddNumbers = numbers.odd;
+        $scope.map = mapData;
+        $scope.$apply();
+    });
+
     $scope.sendMessage = function(){
         socket.emit("message", $scope.textInput);
         $scope.textInput = "";
@@ -60,6 +69,16 @@ app.controller("gameCtrl", function($scope){
         $scope.selected = num;
         $scope.selectedIndex = index;
     }
+
+    $scope.setNumber = function(x, y){
+        if($scope.selected !== null && $scope.canSet){
+            console.log("set "+x+y);
+            socket.emit("set number", x, y, $scope.role === "even" ? 1 : 0, $scope.selected, $scope.selectedIndex);
+            //$scope.canSet = false;
+            $scope.selected = null;
+        }
+    }
+
 
 });
 
