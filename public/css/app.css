@@ -71,22 +71,23 @@ h1 {
 .numbers .hand {
     display: inline-block;
     border: 3px solid silver;
-    margin-right: 8px;
+    margin: 5px;
     line-height: 70px;
     height: 70px;
     width: 70px;
     border-radius: 6px;
     font-size: 30px;
     text-align: center;
-    -webkit-transition: all 1s;
-    -moz-transition: all 1s;
-    -ms-transition: all 1s;
-    -o-transition: all 1s;
-    transition: all 1s;
+    text-decoration: none;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
 .hand:hover{
-    border: 3px solid gray;
+    box-shadow: 0 0 5px silver;
 }
 
 .even{
@@ -95,4 +96,11 @@ h1 {
 
 .odd{
     background-color: lightskyblue;
+}
+
+.hand.selected {
+    margin: 0;
+    line-height: 80px;
+    height: 80px;
+    width: 80px;
 }

@@ -4,12 +4,18 @@ block main
     #gameArea
         table#grid
             tr(ng-repeat="row in map track by $index")
-                td(ng-repeat="cell in row track by $index", class="{{cell===null?'empty':(cell%2==0?'even':'odd')}}") {{cell}}
+                td(ng-repeat="cell in row track by $index",
+                class="{{cell===null?'empty':(cell % 2 == 0 ? 'even' : 'odd')}}") {{cell}}
                 //({{$parent.$index}}, {{$index}})
         .numbers
-            span(class="hand even", ng-repeat="num in evenNumbers track by $index") {{num}}
+            a(href="", class="hand even {{selected === num && $index === selectedIndex ? 'selected' : ''}}",
+            ng-repeat="num in evenNumbers track by $index",
+            ng-click="changeSelected(num, $index)") {{num}}
         .numbers
-            span(class="hand odd", ng-repeat="num in oddNumbers track by $index") {{num}}
+            a(href="", class="hand odd {{selected === num && $index === selectedIndex ? 'selected' : ''}}",
+            ng-repeat="num in oddNumbers track by $index",
+            ng-click="changeSelected(num, $index)") {{num}}
+        p {{selected}}
     #side
         form(ng-submit="sendMessage()")
             input#inputMessage(ng-model="textInput", type="text")

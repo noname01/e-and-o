@@ -3,6 +3,9 @@ var socket = io();
 
 app.controller("gameCtrl", function($scope){
 
+    $scope.selected = "none";
+    $scope.selectedIndex = -1;
+
     $scope.map = new Array(5);
     for(var i = 0; i < 5; i++){
         $scope.map[i] = new Array(5);
@@ -52,6 +55,11 @@ app.controller("gameCtrl", function($scope){
         socket.emit("message", $scope.textInput);
         $scope.textInput = "";
     };
+
+    $scope.changeSelected = function(num, index){
+        $scope.selected = num;
+        $scope.selectedIndex = index;
+    }
 
 });
 
