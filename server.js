@@ -21,6 +21,7 @@ app.get("*", routes.index);
 
 var waiting = null;
 var prevRole = null;
+var prevMap = null;
 var roomCount = 0;
 var numberDataPair = null;
 
@@ -28,7 +29,7 @@ var numberDataPair = null;
 io.on("connection", function(socket){
     // namespace: roomX
     var room = "room";
-    var map = mapData.generateMap();
+    var map = null;
     var role = null;
     var gameNumberData = null;
 
@@ -38,6 +39,8 @@ io.on("connection", function(socket){
         waiting = room;
         role = Math.random() > 0.5 ? "even" : "odd";
         numberDataPair = numberData.partition();
+        map = mapData.generateMap();
+        prevMap = map;
         gameNumberData = numberDataPair[role === "even" ? 0 : 1];
         socket.emit("init", role);
         prevRole = role;
@@ -48,6 +51,8 @@ io.on("connection", function(socket){
     else{ // join a room
         room += roomCount;
         role = prevRole == "even" ? "odd" : "even";
+        map = prevMap;
+        prevMap = null;
         gameNumberData = numberDataPair[role === "even" ? 0 : 1];
         socket.emit("init", role);
         prevRole = null;
@@ -78,6 +83,8 @@ io.on("connection", function(socket){
         console.log("user disconnected");
         if(waiting === room){
             waiting = null;
+            prevRole = null;
+            prevMap = null;
         }
         io.in(room).emit("opponent left");
     });
