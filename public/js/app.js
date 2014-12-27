@@ -37,13 +37,12 @@ app.controller("gameCtrl", function($scope){
         updateMessages($scope, "chat:" + msg);
     });
 
-    socket.on("init", function(role, nums){
+    socket.on("init", function(role){
         $scope.role = role;
     });
 
-    socket.on("game starts", function(mapData, numberData){
-        $scope.evenNumbers = numberData.even;
-        $scope.oddNumbers = numberData.odd;
+    socket.on("game starts", function(mapData, numberDataBoth){
+        $scope.numbers = numberDataBoth[$scope.role];
         $scope.map = mapData;
         updateMessages($scope, "game starts.");
         updateMessages($scope, "your role is " + $scope.role);
@@ -57,8 +56,7 @@ app.controller("gameCtrl", function($scope){
     });
 
     socket.on("update numbers", function(numberData){
-        $scope.evenNumbers = numberData.even;
-        $scope.oddNumbers = numberData.odd;
+        $scope.numbers = numberData;
         $scope.$apply();
     });
 
@@ -68,9 +66,11 @@ app.controller("gameCtrl", function($scope){
     };
 
     $scope.changeSelected = function(num, index){
+        if(!$scope.numbers[num % 2 == 0 ? "even" : "odd"].available[index]) return;
         $scope.selected = num;
         $scope.selectedIndex = index;
-    }
+        console.log($scope.numbers);
+    };
 
     $scope.setNumber = function(x, y){
         if($scope.selected !== null && $scope.canSet){
@@ -80,7 +80,6 @@ app.controller("gameCtrl", function($scope){
             $scope.selected = null;
         }
     }
-
 
 });
 

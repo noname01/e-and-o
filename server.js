@@ -41,7 +41,8 @@ io.on("connection", function(socket){
         numberDataPair = numberData.partition();
         map = mapData.generateMap();
         prevMap = map;
-        gameNumberData = numberDataPair[role === "even" ? 0 : 1];
+        gameNumberData = numberDataPair[role];
+        console.log(gameNumberData);
         socket.emit("init", role);
         prevRole = role;
         console.log("create " + room + " role:" + role);
@@ -53,7 +54,8 @@ io.on("connection", function(socket){
         role = prevRole == "even" ? "odd" : "even";
         map = prevMap;
         prevMap = null;
-        gameNumberData = numberDataPair[role === "even" ? 0 : 1];
+        gameNumberData = numberDataPair[role];
+        console.log(gameNumberData);
         socket.emit("init", role);
         prevRole = null;
         console.log("join room" + roomCount + " role:" + role);
@@ -61,7 +63,7 @@ io.on("connection", function(socket){
         io.in(room).emit("find opponent");
         waiting = null;
         setTimeout(function(){
-            io.in(room).emit("game starts", map, gameNumberData);
+            io.in(room).emit("game starts", map, numberDataPair);
         }, 3000)
     }
 
@@ -73,8 +75,8 @@ io.on("connection", function(socket){
 
     socket.on("set number", function(x, y, num, numberIndex){
         map[x][y] = num;
-        gameNumberData[num % 2 == 0 ? "even" : "odd"].splice(numberIndex, 1);
-        console.log(gameNumberData);
+        gameNumberData[num % 2 == 0 ? "even" : "odd"]["available"][numberIndex] = false;
+        //console.log(gameNumberData);
         io.in(room).emit("update map", map);
         socket.emit("update numbers", gameNumberData);
     });
