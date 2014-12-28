@@ -5,7 +5,7 @@ app.controller("gameCtrl", function($scope){
 
     $scope.selected = null;
     $scope.selectedIndex = -1;
-    $scope.canSet = true;
+    $scope.currentTurn = null;
 
     $scope.map = new Array(5);
     for(var i = 0; i < 5; i++){
@@ -16,8 +16,6 @@ app.controller("gameCtrl", function($scope){
             $scope.map[i][j] = null;
         }
     }
-
-    console.log($scope.map);
 
     $scope.messages = [];
 
@@ -37,27 +35,24 @@ app.controller("gameCtrl", function($scope){
         updateMessages($scope, "chat:" + msg);
     });
 
-    socket.on("init", function(role){
+    socket.on("init role", function(role){
         $scope.role = role;
     });
 
-    socket.on("game starts", function(mapData, numberDataBoth){
-        $scope.numbers = numberDataBoth[$scope.role];
-        $scope.map = mapData;
+    socket.on("game starts", function(roomData){
+        $scope.numbers = roomData.numberDataPair[$scope.role];
+        $scope.map = roomData.map;
+        $scope.currentTurn = roomData.currentTurn;
         updateMessages($scope, "game starts.");
         updateMessages($scope, "your role is " + $scope.role);
-        //console.log($scope.map);
-        $scope.$apply();
+        updateMessages($scope, $scope.role === $scope.currentTurn ? "Your turn." : "Opponent's turn.");
     });
 
-    socket.on("update map", function(mapData){
-        $scope.map = mapData;
-        $scope.$apply();
-    });
-
-    socket.on("update numbers", function(numberData){
-        $scope.numbers = numberData;
-        $scope.$apply();
+    socket.on("update room data", function(roomData){
+        $scope.numbers = roomData.numberDataPair[$scope.role];
+        $scope.map = roomData.map;
+        $scope.currentTurn = roomData.currentTurn;
+        updateMessages($scope, $scope.role === $scope.currentTurn ? "Your turn." : "Opponent's turn.");
     });
 
     $scope.sendMessage = function(){
@@ -69,14 +64,11 @@ app.controller("gameCtrl", function($scope){
         if(!$scope.numbers[num % 2 == 0 ? "even" : "odd"].available[index]) return;
         $scope.selected = num;
         $scope.selectedIndex = index;
-        console.log($scope.numbers);
     };
 
     $scope.setNumber = function(x, y){
-        if($scope.selected !== null && $scope.canSet){
-            console.log("set "+x+y);
+        if($scope.selected !== null && $scope.map[x][y] === null && $scope.currentTurn === $scope.role){
             socket.emit("set number", x, y, $scope.selected, $scope.selectedIndex);
-            //$scope.canSet = false;
             $scope.selected = null;
         }
     }

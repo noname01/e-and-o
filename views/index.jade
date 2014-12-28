@@ -5,15 +5,17 @@ block main
         table#grid
             tr(ng-repeat="row in map track by $index")
                 td(ng-repeat="cell in row track by $index",
-                class="{{(cell === null ? 'empty' : (cell % 2 == 0 ? 'even' : 'odd'))}} {{canSet ? 'canSet' : ''}}",
+                class="{{(cell === null ? 'empty' : (cell % 2 == 0 ? 'even' : 'odd'))}} {{role === currentTurn ? 'canSet' : ''}}",
                 ng-click="setNumber($parent.$index, $index)") {{cell}}
         .numbers
-            a(href="", ng-repeat="num in numbers.even.list track by $index",
-            class="hand even {{(num === selected && $index === selectedIndex) ? 'selected' : ''}} {{numbers.even.available[$index]?'':'used'}}",
+            a(href="", class="hand even",
+            ng-repeat="num in numbers.even.list track by $index",
+            ng-class="{selected: num === selected && $index === selectedIndex, used: !numbers.even.available[$index]}",
             ng-click="changeSelected(num, $index)") {{num}}
         .numbers
-            a(href="", ng-repeat="num in numbers.odd.list track by $index",
-            class="hand odd {{(num === selected && $index === selectedIndex) ? 'selected' : ''}} {{numbers.odd.available[$index]?'':'used'}}",
+            a(href="", class="hand odd",
+            ng-repeat="num in numbers.odd.list track by $index",
+            ng-class="{selected: num === selected && $index === selectedIndex, used: !numbers.odd.available[$index]}",
             ng-click="changeSelected(num, $index)") {{num}}
 
     #side
@@ -21,4 +23,4 @@ block main
             input#inputMessage(ng-model="textInput", type="text")
             input(type="submit", value="send")
         ul#messages
-            li(ng-repeat="msg in messages" class="animation") {{msg}}
+            li(ng-repeat="msg in messages track by $index") {{msg}}

@@ -1,13 +1,11 @@
 var express = require("express");
 var path = require("path");
 var routes = require("./routes");
-var mapData = require("./mapData.js");
-var numberData = require("./numberData.js");
+var roomData = require("./roomData.js");
 
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
 
 // config
 app.set('port', process.env.PORT || 3000);
@@ -19,76 +17,64 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', routes.index);
 app.get("*", routes.index);
 
-var waiting = null;
 var prevRole = null;
-var prevMap = null;
 var roomCount = 0;
-var numberDataPair = null;
+var prevRoomData = null;
 
 // socket.io
 io.on("connection", function(socket){
     // namespace: roomX
-    var room = "room";
-    var map = null;
     var role = null;
-    var gameNumberData = null;
+    var roomSharedData = null;
 
-    if(waiting === null){ // create a new room
+    if(prevRoomData === null){ // create a new room
         roomCount++;
-        room += roomCount;
-        waiting = room;
+        roomSharedData = roomData.generate();
+        roomSharedData.roomId = "room" + roomCount;
+        prevRoomData = roomSharedData;
+
         role = Math.random() > 0.5 ? "even" : "odd";
-        numberDataPair = numberData.partition();
-        map = mapData.generateMap();
-        prevMap = map;
-        gameNumberData = numberDataPair[role];
-        console.log(gameNumberData);
-        socket.emit("init", role);
+        socket.emit("init role", role);
         prevRole = role;
-        console.log("create " + room + " role:" + role);
-        socket.join(room);
+
+        socket.join(roomSharedData.roomId);
         socket.emit("waiting");
     }
     else{ // join a room
-        room += roomCount;
+        roomSharedData = prevRoomData;
+        roomSharedData.currentTurn = "odd";
+        prevRoomData = null;
+
         role = prevRole == "even" ? "odd" : "even";
-        map = prevMap;
-        prevMap = null;
-        gameNumberData = numberDataPair[role];
-        console.log(gameNumberData);
-        socket.emit("init", role);
+        socket.emit("init role", role);
         prevRole = null;
-        console.log("join room" + roomCount + " role:" + role);
-        socket.join(room);
-        io.in(room).emit("find opponent");
-        waiting = null;
+
+        socket.join(roomSharedData.roomId);
+        io.in(roomSharedData.roomId).emit("find opponent");
         setTimeout(function(){
-            io.in(room).emit("game starts", map, numberDataPair);
+            io.in(roomSharedData.roomId).emit("game starts", roomSharedData);
         }, 3000)
     }
 
-    console.log('a user connected');
     socket.on("message", function(msg){
-        console.log("msg: " + msg);
-        io.in(room).emit("message", msg);
+        io.in(roomSharedData.roomId).emit("message", msg);
     });
 
     socket.on("set number", function(x, y, num, numberIndex){
-        map[x][y] = num;
-        gameNumberData[num % 2 == 0 ? "even" : "odd"]["available"][numberIndex] = false;
-        //console.log(gameNumberData);
-        io.in(room).emit("update map", map);
-        socket.emit("update numbers", gameNumberData);
+        //if canSet && map[x][y] === null etc
+        roomSharedData.map[x][y] = num;
+        roomSharedData.numberDataPair[role][num % 2 == 0 ? "even" : "odd"]["available"][numberIndex] = false;
+        roomSharedData.currentTurn = roomSharedData.currentTurn === "odd" ? "even" : "odd";
+        io.in(roomSharedData.roomId).emit("update room data", roomSharedData);
     });
 
     socket.on("disconnect", function(){
         console.log("user disconnected");
-        if(waiting === room){
-            waiting = null;
+        if(prevRoomData && prevRoomData.roomId === roomSharedData.roomId){
             prevRole = null;
-            prevMap = null;
+            prevRoomData = null;
         }
-        io.in(room).emit("opponent left");
+        io.in(roomSharedData.id).emit("opponent left");
     });
 });
 
