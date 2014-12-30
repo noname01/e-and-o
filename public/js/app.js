@@ -6,6 +6,10 @@ app.controller("gameCtrl", function($scope){
     $scope.selected = null;
     $scope.selectedIndex = -1;
     $scope.currentTurn = null;
+    $scope.scores = {
+        even: 0,
+        odd: 0
+    };
 
     $scope.map = new Array(5);
     for(var i = 0; i < 5; i++){
@@ -52,6 +56,7 @@ app.controller("gameCtrl", function($scope){
         $scope.numbers = roomData.numberDataPair[$scope.role];
         $scope.map = roomData.map;
         $scope.currentTurn = roomData.currentTurn;
+        $scope.scores = roomData.scores;
         updateMessages($scope, $scope.role === $scope.currentTurn ? "Your turn." : "Opponent's turn.");
     });
 

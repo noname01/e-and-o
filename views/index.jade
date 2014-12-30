@@ -1,6 +1,7 @@
 extends layout.jade
 block main
     h1 E&O
+    p even: {{scores.even}} odd: {{scores.odd}}
     #gameArea
         table#grid
             tr(ng-repeat="row in map track by $index")

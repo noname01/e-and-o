@@ -8,7 +8,7 @@ var prototype = {
     currentTurn: null,
     rowSum: [0, 0, 0, 0, 0],
     colSum: [0, 0, 0, 0, 0],
-    score: {
+    scores: {
         even: 0,
         odd: 0
     }

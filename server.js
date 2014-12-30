@@ -61,15 +61,23 @@ io.on("connection", function(socket){
     });
 
     socket.on("set number", function(x, y, num, numberIndex){
-        //if canSet && map[x][y] === null etc
-        roomSharedData.map[x][y] = num;
-        roomSharedData.numberDataPair[role][num % 2 == 0 ? "even" : "odd"]["available"][numberIndex] = false;
-        roomSharedData.currentTurn = roomSharedData.currentTurn === "odd" ? "even" : "odd";
-        io.in(roomSharedData.roomId).emit("update room data", roomSharedData);
+        if(roomSharedData.currentTurn === role && roomSharedData.map[x][y] === null
+            && roomSharedData.numberDataPair[role][num % 2 == 0 ? "even" : "odd"]["available"][numberIndex]) {
+            roomSharedData.map[x][y] = num;
+            roomSharedData.scores[roomSharedData.rowSum[x] % 2 == 0 ? "even" : "odd"] -= roomSharedData.rowSum[x];
+            roomSharedData.scores[roomSharedData.colSum[y] % 2 == 0 ? "even" : "odd"] -= roomSharedData.colSum[y];
+            roomSharedData.rowSum[x] += num;
+            roomSharedData.colSum[y] += num;
+            roomSharedData.scores[roomSharedData.rowSum[x] % 2 == 0 ? "even" : "odd"] += roomSharedData.rowSum[x];
+            roomSharedData.scores[roomSharedData.colSum[y] % 2 == 0 ? "even" : "odd"] += roomSharedData.colSum[y];
+
+            roomSharedData.numberDataPair[role][num % 2 == 0 ? "even" : "odd"]["available"][numberIndex] = false;
+            roomSharedData.currentTurn = roomSharedData.currentTurn === "odd" ? "even" : "odd";
+            io.in(roomSharedData.roomId).emit("update room data", roomSharedData);
+        }
     });
 
     socket.on("disconnect", function(){
-        console.log("user disconnected");
         if(prevRoomData && prevRoomData.roomId === roomSharedData.roomId){
             prevRole = null;
             prevRoomData = null;
